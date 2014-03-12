@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="text-center">Database</h2>
+    </div>
+  </div>
+  <form class="form-inline" role="form">
+    <div class="form-group">
+      <select class="form-control">
+        <option>select country</option>
+      </select>
+      <select class="form-control">
+        <option>select region</option>
+      </select>
+      <select class="form-control">
+        <option>select city</option>
+      </select>
+      </div>
+  </form>
+
+
+  <form class="col-md-12 hidden" role="form"  id="addForm">
+    <div class="form-group">
+     <textarea class="form-control" rows="3"></textarea>
+      <button class="btn btn-success col-md-12" id="sendToServer">add</button>
+    </div>
+  </form>
+
+
+  <div class="col-md-12">
+    <button class="btn btn-info col-md-12" id="addRecord">add</button>
+    <h3 class="text-center">Results</h3>
+    <table class="table table-hover">
+      <tr>
+        <td>Name</td>
+        <td><button class="btn btn-default">change</button></td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td width='90'><button class="btn btn-default">change</button></td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td><button class="btn btn-default">change</button></td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td><button class="btn btn-default">change</button></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+</body>
+</html>
