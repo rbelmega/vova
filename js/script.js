@@ -16,11 +16,11 @@ $(document).ready(function () {
   app.changeSelect = function () {
     var that = this;
     this.$country.change(function () {
-      that.getList('region', 'country')
+      that.getList('region', 'country');
     });
 
     this.$region.change(function () {
-      that.getList('city', 'region')
+      that.getList('city', 'region');
     });
 
     this.$city.change(function () {
@@ -131,13 +131,12 @@ $(document).ready(function () {
     that.$saveRecord.click(function () {
       that.toggleHidden(that.$addRecord);
       that.toggleHidden(that.$saveForm);
-    })
+    });
   };
 
   app.changeSelect();
   app.save();
   app.showRecord();
   app.action();
-
 
 });
