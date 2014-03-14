@@ -6,7 +6,19 @@
   <title>Database</title>
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="text/javascript">
+        function getList(type, obj) {
+            $.post('cities.php', {type: type, id: $('#'+obj).val()}, onAjaxSuccess);
+            function onAjaxSuccess(data) {
+                out = document.getElementById(type);
+                for (var i = out.length - 1; i >= 0; i--) {
+                    out.options[i] = null;
+                }
+                eval(data);
 
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="container">
@@ -17,6 +29,33 @@
   </div>
   <form class="form-inline" role="form">
     <div class="form-group">
+
+
+
+        <select name="countryid" id="country" onchange="getList('region', 'country')" style="width:300px;">
+            <?
+include "db.php";
+$result = mysql_query("SELECT * from country",$db);
+$myrow = mysql_fetch_array($result);
+do
+{
+printf('
+<option value="%s">%s</option>
+            ', $myrow['country_id'], $myrow['name']);
+            }
+            while($myrow = mysql_fetch_array($result));
+            ?>
+        </select>
+        <select name="regionid" id="region" onchange="getList('city', 'region')" style="width:300px;">
+        </select>
+        <select name="city_id" id="city" style="width:300px;">
+        </select>
+
+
+
+
+
+
       <select class="form-control">
         <option>select country</option>
       </select>

@@ -1,4 +1,4 @@
-#addRecord, #addForm, #sendToServer {
+#addRecord, #saveForm, #saveRecord, #wait {
   margin: 30px 0;
 }
 .hidden{
