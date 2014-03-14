@@ -1,49 +1,56 @@
 $(document).ready(function () {
 
-  $('#addRecord, #saveRecord').click(function () {
-    $('#saveForm, #addRecord').toggleClass('hidden');
-  });
+  var app = {
+    $addRecord: $('#addRecord'),
+    $saveRecord: $('#saveRecord'),
+    $saveForm: $('#saveForm'),
+    $city: $('#city'),
+    $country: $('#country'),
+    $region: $('#region'),
+    $wait: $('#wait'),
+    $fieldset: $('fieldset'),
+    $showResults: $('#showResults'),
+    $document: $(document)
+  };
 
-  $('#saveForm').submit(function (e) {
-    e.preventDefault();
-
-    $.ajax({
-      type: 'post',
-      url: 'php/save_information.php',
-      data: {
-        id: Number($('#city').find(':selected').val()) || Number($('#region').find(':selected').val()) || Number($('#country').find(':selected').val()),
-        information: $(this).find('textarea').val()
-      },
-      success: function (data) {
-        if (data === 'inserted') {
-          $(this).find('textarea').val('');
-        }
-      }
+  app.changeSelect = function () {
+    var that = this;
+    this.$country.change(function () {
+      that.getList('region', 'country')
     });
 
-  });
+    this.$region.change(function () {
+      that.getList('city', 'region')
+    });
 
-  $('#city').change(function () {
-    getTable();
-  });
+    this.$city.change(function () {
+      that.getTable();
+    });
 
-  $(document).on('click', '.showRecord', function () {
-    var $viewRecordBtn = $('#viewRecordBtn');
-    var target = $viewRecordBtn.data('target');
-    $(target).find('.modal-body').html('');
-    $(target).find('.modal-body').html($(this).data('text'));
-    $viewRecordBtn.click();
-  });
+  };
 
-  $('#country').change(function () {
-    getList('region', 'country')
-  });
-  $('#region').change(function () {
-    getList('city', 'region')
-  });
+  app.save = function () {
+    this.$saveForm.submit(function (e) {
+      e.preventDefault();
 
+      $.ajax({
+        type: 'post',
+        url: 'php/save_information.php',
+        data: {
+          id: Number($('#city').find(':selected').val()) || Number($('#region').find(':selected').val()) || Number($('#country').find(':selected').val()),
+          information: $(this).find('textarea').val()
+        },
+        success: function (data) {
+          if (data === 'inserted') {
+            $(this).find('textarea').val('');
+          }
+        }
+      });
+    });
+  };
 
-  function getTable() {
+  app.getTable = function () {
+    var that = this;
     $.ajax({
       type: 'post',
       url: 'php/get_information.php',
@@ -54,7 +61,6 @@ $(document).ready(function () {
         var data = JSON.parse(json);
         var $table = $('<table>', {'class': 'table table-hover'});
         var len = data.length;
-        var $showResults = $('#showResults');
         var $tr;
 
         for (var i = 0; i < len; i++) {
@@ -65,24 +71,25 @@ $(document).ready(function () {
         }
         $($table).appendTo('.table-responsive');
 
-        $showResults.find('h3').text('Results: ' + len);
-        $showResults.removeClass('hidden');
+        that.$showResults.find('h3').text('Results: ' + len);
+        that.$showResults.removeClass('hidden');
       }
     });
-  }
+  };
 
-  function getList(type, obj) {
+  app.getList = function (type, obj) {
+    var that = this;
     var hiddenStr = '#showResults, #addRecord, #saveForm';
-    $('fieldset').attr('disabled', 'disabled');
-    $('#wait').toggleClass('hidden');
+
+    that.$fieldset.attr('disabled', 'disabled');
+    that.$wait.toggleClass('hidden');
+    that.$saveForm.find('textarea').val('');
+    that.$city.html('<option>select city</option>');
+
     $(hiddenStr).addClass('hidden');
     $('.table-responsive').empty();
-    $('#saveForm').find('textarea').val('');
-    $('#city').html('<option>select city</option>');
 
-    $.post('cities.php', {type: type, id: $('#' + obj).val()}, onAjaxSuccess);
-
-    function onAjaxSuccess(data) {
+    $.post('cities.php', {type: type, id: $('#' + obj).val()}, function (data) {
       var out = document.getElementById(type);
       for (var i = out.length - 1; i >= 0; i--) {
         out.options[i] = null;
@@ -93,12 +100,43 @@ $(document).ready(function () {
       catch (e) {
       }
 
-      $('#wait').toggleClass('hidden');
-      $('fieldset').removeAttr('disabled');
-      $('#addRecord').removeClass('hidden');
+      that.$wait.toggleClass('hidden');
+      that.$fieldset.removeAttr('disabled');
+      that.$addRecord.removeClass('hidden');
+      that.getTable();
+    });
+  };
 
-      getTable();
-    }
-  }
+  app.showRecord = function () {
+    this.$document.on('click', '.showRecord', function () {
+      var $viewRecordBtn = $('#viewRecordBtn');
+      var target = $viewRecordBtn.data('target');
+      $(target).find('.modal-body').html('');
+      $(target).find('.modal-body').html($(this).data('text'));
+      $viewRecordBtn.click();
+    });
+  };
+
+  app.toggleHidden = function (target) {
+    target.toggleClass('hidden');
+  };
+
+  app.action = function () {
+    var that = this;
+    that.$addRecord.click(function () {
+      that.toggleHidden(that.$addRecord);
+      that.toggleHidden(that.$saveForm);
+    });
+
+    that.$saveRecord.click(function () {
+      that.toggleHidden(that.$addRecord);
+      that.toggleHidden(that.$saveForm);
+    })
+  };
+
+  app.changeSelect();
+  app.save();
+  app.showRecord();
+  app.action();
 
 });
